@@ -15,7 +15,13 @@
         </Grid.ColumnDefinitions>
         <DockPanel Background="#FF2E8B57" >
             <TextBox x:Name="t_vars" DockPanel.Dock="Top"></TextBox>
-            <TextBox VerticalScrollBarVisibility="Visible" Name="tb_source" TextWrapping="Wrap" DockPanel.Dock="Top" HorizontalScrollBarVisibility="Visible"  Background="#FFFFFFE0" FontFamily="Courier New" AcceptsReturn="True" AcceptsTab="True" />
+            <avalonEdit:TextEditor
+                xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+                VerticalScrollBarVisibility="Visible" Name="tb_source" DockPanel.Dock="Top" HorizontalScrollBarVisibility="Visible"
+                SyntaxHighlighting="XML"
+                FontFamily="Consolas"
+                
+                FontSize="9pt"/> 
         </DockPanel>
         <GridSplitter Grid.Column="1" ResizeDirection="Columns" Width="5" Background="Purple" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
         <DockPanel Grid.Column="2">

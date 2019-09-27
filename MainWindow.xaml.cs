@@ -35,8 +35,7 @@ namespace oFlowDocument2
             b_save.Click += B_save_Click;
 
             PreviewKeyUp += MainWindow_PreviewKeyUp;
-            tb_source.TextChanged += Tb_source_TextChanged1;
-            t_vars.TextChanged += Tb_source_TextChanged1;
+            t_vars.TextChanged += T_vars_TextChanged;
             try
             {
                 var args = Environment.GetCommandLineArgs();
@@ -55,13 +54,22 @@ namespace oFlowDocument2
 
         }
 
+
+
         private void B_save_Click(object sender, RoutedEventArgs e)
         {
             Save();
         }
-
-        private void Tb_source_TextChanged1(object sender, TextChangedEventArgs e)
+        private void T_vars_TextChanged(object sender, TextChangedEventArgs e)
         {
+
+            if (!Title.Contains("*"))
+                Title += "*";
+            ww.DoEvent();
+        }
+        private void Tb_source_TextChanged(object sender, EventArgs e)
+        {
+          
             if (!Title.Contains("*"))
                 Title += "*";
             ww.DoEvent();
@@ -86,11 +94,7 @@ namespace oFlowDocument2
             UpdatePreview();
         }
 
-
-        private void Tb_source_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            ww.DoEvent();
-        }
+ 
 
         private bool bzoomed = false;
         private void UpdatePreview()
@@ -127,7 +131,7 @@ namespace oFlowDocument2
             if (!bzoomed)
             {
                 bzoomed = true;
-                fdViewer.FitToHeight();
+                fdViewer.FitToWidth();
             }
         }
 
