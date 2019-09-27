@@ -7,17 +7,24 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         Title="oFlowDocument2" Height="700" Width="1200">
-    <DockPanel>
-        <DockPanel Background="#FF2E8B57" Width="500">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <DockPanel Background="#FF2E8B57" >
             <TextBox x:Name="t_vars" DockPanel.Dock="Top"></TextBox>
-            <TextBox Name="tb_source" DockPanel.Dock="Top" HorizontalScrollBarVisibility="Visible"  Background="#FFFFFFE0" FontFamily="Courier New" AcceptsReturn="True" AcceptsTab="True" />
+            <TextBox VerticalScrollBarVisibility="Visible" Name="tb_source" TextWrapping="Wrap" DockPanel.Dock="Top" HorizontalScrollBarVisibility="Visible"  Background="#FFFFFFE0" FontFamily="Courier New" AcceptsReturn="True" AcceptsTab="True" />
         </DockPanel>
-        <DockPanel Dock="Top">
-            <Button Name="b_open" Content=" ... " DockPanel.Dock="Right" />
-            <Button Name="b_save" Content=" Save (Ctrl + S) " DockPanel.Dock="Right" />
-            <TextBlock Name="t_file" DockPanel.Dock="Left" Foreground="#FFFFFFFF" />
+        <GridSplitter Grid.Column="1" ResizeDirection="Columns" Width="5" Background="Purple" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+        <DockPanel Grid.Column="2">
+            <DockPanel Dock="Top" >
+                <Button Name="b_save" Content=" Save (Ctrl + S) " DockPanel.Dock="Right" />
+                <TextBlock Name="t_file" DockPanel.Dock="Left" Foreground="#FFFFFFFF" />
+            </DockPanel>
+            <TextBlock Name="t_error" Foreground="#FF00FF00" Background="#FF2F4F4F" DockPanel.Dock="Bottom" />
+            <local:oDocumentViewer x:Name="fdViewer" DockPanel.Dock="Top" />
         </DockPanel>
-        <TextBlock Name="t_error" Foreground="#FF00FF00" Background="#FF2F4F4F" DockPanel.Dock="Bottom" />
-        <DocumentViewer Name="fdViewer" DockPanel.Dock="Top" />
-    </DockPanel>
+    </Grid>
 </Window>

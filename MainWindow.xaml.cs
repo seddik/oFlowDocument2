@@ -30,18 +30,13 @@ namespace oFlowDocument2
         {
             InitializeComponent();
 
-            b_open.Click += B_open_Click;
             ww = new WaitWorker(UpdatePreview, 1.0);
             tb_source.TextChanged += Tb_source_TextChanged;
-            DispatcherTimer tt = new DispatcherTimer();
-            tt.Interval = TimeSpan.FromSeconds(1.0);
-            tt.Start();
-            tt.Tick += delegate
-            {
-                ww.DoEvent();
-            };
+            b_save.Click += B_save_Click;
+
             PreviewKeyUp += MainWindow_PreviewKeyUp;
             tb_source.TextChanged += Tb_source_TextChanged1;
+            t_vars.TextChanged += Tb_source_TextChanged1;
             try
             {
                 var args = Environment.GetCommandLineArgs();
@@ -60,9 +55,15 @@ namespace oFlowDocument2
 
         }
 
+        private void B_save_Click(object sender, RoutedEventArgs e)
+        {
+            Save();
+        }
 
         private void Tb_source_TextChanged1(object sender, TextChangedEventArgs e)
         {
+            if (!Title.Contains("*"))
+                Title += "*";
             ww.DoEvent();
         }
 
@@ -71,57 +72,18 @@ namespace oFlowDocument2
             if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
                 if (e.Key == Key.S)
                 {
-                    if (t_file.Text.IsEmpty())
-                        return;
-                    File.WriteAllText(t_file.Text, tb_source.Text);
-
-                    UpdatePreview();
+                    Save();
                 }
         }
 
-        private void B_open_Click(object sender, RoutedEventArgs e)
+        private void Save()
         {
-            try
-            {
-                OpenFileDialog ofd = new OpenFileDialog();
-                if (ofd.ShowDialog() == true)
-                {
-                    t_file.Text = ofd.FileName;
-                    Title = "oFlowDocument2 : " + ofd.FileName;
-                    tb_source.Text = "";
-                    tb_source.IsEnabled = false;
-                    StartWatching(t_file.Text);
-                    UpdatePreview();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private FileSystemWatcher fs;
-        private void StartWatching(string file)
-        {
-            string watchingFolder = System.IO.Path.GetDirectoryName(file);
-            if (fs != null)
-            {
-                fs.Changed -= fs_Changed;
-            }
-            fs = new FileSystemWatcher(watchingFolder, file);
-            fs.EnableRaisingEvents = true;
-            fs.IncludeSubdirectories = true;
-            fs.Changed += fs_Changed;
-        }
-
-        private void fs_Changed(object sender, FileSystemEventArgs e)
-        {
-            if (tb_source.IsEnabled)
+            if (t_file.Text.IsEmpty())
                 return;
-            base.Dispatcher.BeginInvoke((Action)delegate
-            {
-                ww.DoEvent();
-            });
+            File.WriteAllText(t_file.Text, tb_source.Text);
+            if (Title.Contains("*"))
+                Title = Title.Replace("*", "");
+            UpdatePreview();
         }
 
 
@@ -147,6 +109,7 @@ namespace oFlowDocument2
                     reportDocument.XamlData = HandleVars(tb_source.Text);
                     reportDocument.XamlImagePath = Tools.GetLocalFile("");
                 }
+
                 DateTime dateTimeStart = DateTime.Now;
                 List<ReportData> listData = new List<ReportData>();
                 ReportData data = new ReportData();
@@ -160,6 +123,7 @@ namespace oFlowDocument2
             {
                 t_error.Text = ex.Message + Environment.NewLine + ex.StackTrace;
             }
+
             if (!bzoomed)
             {
                 bzoomed = true;
@@ -172,11 +136,11 @@ namespace oFlowDocument2
             var ss = text;
             Dictionary<string, string> dict = new Dictionary<string, string>();
 
-            foreach (var s in t_vars.Text.ToSplit(";"))
+            foreach (var s in t_vars.Text.ToSplit("&"))
             {
                 try
                 {
-                    dict.Add(s.ToSplit("$", 0), s.ToSplit("$", 1));
+                    dict.Add(s.ToSplit("=", 0), s.ToSplit("=", 1));
                 }
                 catch
                 {
